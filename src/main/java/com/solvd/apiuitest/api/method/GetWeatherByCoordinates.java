@@ -1,10 +1,8 @@
-package com.solvd.weatherapitest.api;
+package com.solvd.apiuitest.api.method;
 
 import com.zebrunner.carina.api.AbstractApiMethodV2;
 import com.zebrunner.carina.api.apitools.builder.NotStringValuesProcessor;
 import com.zebrunner.carina.utils.config.Configuration;
-
-import java.util.Properties;
 
 public class GetWeatherByCoordinates extends AbstractApiMethodV2 {
     public GetWeatherByCoordinates(Double lat, Double lon) {

@@ -1,4 +1,4 @@
-package com.solvd.weatherapitest.api;
+package com.solvd.apiuitest.api.method;
 
 import com.zebrunner.carina.api.AbstractApiMethodV2;
 import com.zebrunner.carina.api.apitools.builder.NotStringValuesProcessor;

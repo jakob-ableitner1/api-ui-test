@@ -1,46 +1,47 @@
-{
-  "coord": {
-    "lon": "${location.longitude}",
-    "lat": "${location.latitude}"
-  },
-  "weather": [
-    {
+
+  {
+    "coord": {
+      "lon": "${location.longitude}",
+      "lat": "${location.latitude}"
+    },
+    "weather": [
+      {
+        "id": "type:Integer",
+        "main": "type:String",
+        "description": "type:String",
+        "icon": "type:String"
+      }
+    ],
+    "base": "stations",
+    "main": {
+      "temp": "type:Double",
+      "feels_like": "type:Double",
+      "temp_min": "type:Double",
+      "temp_max": "type:Double",
+      "pressure": "type:Integer",
+      "humidity": "type:Integer",
+      <#if sea_level??>"sea_level": "type:Integer", </#if>
+      <#if grnd_level??>"grnd_level": "type:Integer" </#if>
+    },
+    "visibility": "type:Integer",
+    "wind": {
+      "speed": "type:Double",
+      "deg": "type:Integer",
+      <#if gust??>"gust": "type:Double"</#if>
+    },
+    "clouds": {
+      "all":  "type:Integer"
+    },
+    "dt": "type:Integer",
+    "sys": {
+      "type": "type:Integer",
       "id": "type:Integer",
-      "main": "type:String",
-      "description": "type:String",
-      "icon": "type:String"
-    }
-  ],
-  "base": "stations",
-  "main": {
-    "temp": "type:Double",
-    "feels_like": "type:Double",
-    "temp_min": "type:Double",
-    "temp_max": "type:Double",
-    "pressure": "type:Integer",
-    "humidity": "type:Integer",
-    "sea_level": "type:Integer",
-    "grnd_level": "type:Integer"
-  },
-  "visibility": "type:Integer",
-  "wind": {
-    "speed": "type:Double",
-    "deg": "type:Integer",
-    "gust": "type:Double"
-  },
-  "clouds": {
-    "all":  "type:Integer"
-  },
-  "dt": "type:Integer",
-  "sys": {
-    "type": "type:Integer",
+      "country": "${location.country.name}",
+      "sunrise": "type:Integer",
+      "sunset": "type:Integer"
+    },
+    "timezone": "${location.timezone}",
     "id": "type:Integer",
-    "country": "${location.country.name}",
-    "sunrise": "type:Integer",
-    "sunset": "type:Integer"
-  },
-  "timezone": "${location.timezone}",
-  "id": "type:Integer",
-  "name": "${location.name}",
-  "cod": "type:Integer"
-}
+    "name": "${location.name}",
+    "cod": "type:Integer"
+  }

@@ -1,17 +1,12 @@
-package com.solvd.weatherapitest;
+package com.solvd.apiuitest.api;
 
-import com.solvd.weatherapitest.api.GetWeatherByCityCode;
-import com.solvd.weatherapitest.api.GetWeatherByCityNameAndCountryCode;
-import com.solvd.weatherapitest.api.GetWeatherByCoordinates;
-import com.solvd.weatherapitest.domain.City;
-import com.solvd.weatherapitest.domain.Country;
+import com.solvd.apiuitest.api.method.GetWeatherByCityCode;
+import com.solvd.apiuitest.api.method.GetWeatherByCityNameAndCountryCode;
+import com.solvd.apiuitest.api.method.GetWeatherByCoordinates;
+import com.solvd.apiuitest.api.domain.City;
+import com.solvd.apiuitest.api.domain.Country;
 import com.zebrunner.carina.api.http.HttpResponseStatusType;
-import com.zebrunner.carina.crypto.CryptoConsole;
-import javassist.tools.reflect.Reflection;
 import org.testng.annotations.Test;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 
 public class WeatherTest {
 

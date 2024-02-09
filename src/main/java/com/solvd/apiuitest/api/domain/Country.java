@@ -1,4 +1,4 @@
-package com.solvd.weatherapitest.domain;
+package com.solvd.apiuitest.api.domain;
 
 public class Country {
     private String id;
