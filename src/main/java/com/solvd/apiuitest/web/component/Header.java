@@ -18,6 +18,9 @@ public class Header extends AbstractUIObject {
     @FindBy(xpath = ".//*[@data-auto-id= 'auxiliary-menu']//div")
     private SearchLine searchLine;
 
+    @FindBy(xpath = ".//*[@data-auto-id='customer-info-button']")
+    private ExtendedWebElement signInIcon;
+
     public Header(WebDriver driver, SearchContext searchContext) {
         super(driver, searchContext);
     }
@@ -30,12 +33,20 @@ public class Header extends AbstractUIObject {
         return searchLine;
     }
 
-    public ExtendedWebElement getLogo() {
-        return logo;
+    public boolean logoExists() {
+        return logo.isElementPresent(1);
+    }
+
+    public boolean signInIconExists(){
+        return signInIcon.isElementPresent(1);
     }
 
     public HomePage clickLogo(){
         logo.click();
         return new HomePage(getDriver());
+    }
+
+    public void clickSignInIcon(){
+        signInIcon.click();
     }
 }

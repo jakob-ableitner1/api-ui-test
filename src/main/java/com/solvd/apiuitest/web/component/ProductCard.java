@@ -18,15 +18,15 @@ public class ProductCard extends AbstractUIObject {
         super(driver, searchContext);
     }
 
-    public ExtendedWebElement getTitleElement() {
-        return titleElement;
+    public boolean titleElementExists() {
+        return titleElement.isElementPresent(1);
     }
 
     public String getTitleText(){
         return titleElement.getText();
     }
 
-    public ExtendedWebElement getDiscountPercentage() {
-        return discountPercentage;
+    public boolean discountPercentageExists() {
+        return discountPercentage.isElementPresent(1);
     }
 }

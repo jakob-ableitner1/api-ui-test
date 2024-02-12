@@ -17,8 +17,8 @@ public class MainNavigation extends AbstractUIObject {
         super(driver, searchContext);
     }
 
-    public ExtendedWebElement getSaleButton() {
-        return saleButton;
+    public boolean saleButtonExists() {
+        return saleButton.isElementPresent(1);
     }
 
     public SearchPage clickSaleButton(){

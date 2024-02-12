@@ -22,27 +22,23 @@ public class SearchLine extends AbstractUIObject {
         super(driver, searchContext);
     }
 
-    public ExtendedWebElement getSearchInput() {
-        return searchInput;
+    public boolean searchInputExists(){
+        return searchInput.isElementPresent(1);
     }
 
     public String getSearchInputPlaceholder(){
-        return searchInput.getAttribute("placeholder");
+        return searchInput.getText();
     }
 
     public void typeSearchInputValue(String value) {
         searchInput.type(value);
     }
 
-    public ExtendedWebElement getDeleteButton() {
-        return deleteButton;
-    }
-
-    public void clickDeleteButton(){
+    public void clickDeleteButton() {
         deleteButton.click();
     }
 
-    public SearchPage clickEnterButton(){
+    public SearchPage clickEnterButton() {
         Actions action = new Actions(driver);
         action.sendKeys(Keys.RETURN).perform();
         return new SearchPage(getDriver());
