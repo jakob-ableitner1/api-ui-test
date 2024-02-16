@@ -6,9 +6,10 @@ import com.zebrunner.carina.webdriver.gui.AbstractUIObject;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
+
+import java.time.Duration;
 
 public class SearchLine extends AbstractUIObject {
 
@@ -23,11 +24,11 @@ public class SearchLine extends AbstractUIObject {
     }
 
     public boolean searchInputExists(){
-        return searchInput.isElementPresent(1);
+        return searchInput.isElementPresent(Duration.ofMinutes(2));
     }
 
     public String getSearchInputPlaceholder(){
-        return searchInput.getText();
+        return searchInput.getAttribute("placeholder");
     }
 
     public void typeSearchInputValue(String value) {

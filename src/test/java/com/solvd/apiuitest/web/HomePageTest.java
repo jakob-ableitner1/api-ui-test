@@ -1,19 +1,26 @@
 package com.solvd.apiuitest.web;
 
+import com.solvd.apiuitest.enums.ProductPreviewTab;
 import com.solvd.apiuitest.web.component.*;
 import com.zebrunner.carina.core.AbstractTest;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 
+import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
+import java.util.stream.IntStream;
 
 public class HomePageTest extends AbstractTest {
 
     @Test
     public void verifySearchLineTest() {
-        String clothingType = "socks";
+        String shoeLine = "gazelle";
 
         SoftAssert sa = new SoftAssert();
         WebDriver driver = getDriver();
@@ -21,19 +28,45 @@ public class HomePageTest extends AbstractTest {
         HomePage homePage = new HomePage(driver);
         homePage.open();
 
+        Wait<WebDriver> wait = new FluentWait<>(driver)
+                .withTimeout(Duration.ofSeconds(30))
+                .pollingEvery(Duration.ofSeconds(5))
+                .ignoring(StaleElementReferenceException.class)
+                .ignoring(ElementClickInterceptedException.class)
+                .ignoring(IndexOutOfBoundsException.class);
+
         SearchLine searchLine = homePage.getHeader().getSearchLine();
         Assert.assertTrue(searchLine.searchInputExists(), "Search input is not present");
         sa.assertEquals(searchLine.getSearchInputPlaceholder(), "Search", "Search input has an incorrect placeholder");
 
-        searchLine.typeSearchInputValue(clothingType);
+        searchLine.typeSearchInputValue(shoeLine);
 
-        SearchPage searchPage = searchLine.clickEnterButton();
+        AtomicReference<SearchPage> searchPage = new AtomicReference<>(searchLine.clickEnterButton());
+        sa.assertTrue(searchPage.get().getCurrentUrl().contains(shoeLine.toLowerCase()), "Url doesn't contain the shoe line");
+        AtomicReference<List<ProductCard>> cards = new AtomicReference<>(searchPage.get().getCards());
+        int size = cards.get().size();
 
-        sa.assertTrue(driver.getCurrentUrl().contains(clothingType.toLowerCase()), "Url doesn't contain the clothing type");
+        IntStream.range(0, size).forEach(i -> {
+            searchPage.set(new SearchPage(driver));
+            cards.set(searchPage.get().getCards());
 
-        List<ProductCard> cards = searchPage.getCards();
-        cards.stream().forEach(card -> {
-            sa.assertTrue(card.getTitleText().toLowerCase().contains(clothingType.toLowerCase()), String.format("Product with name '%s' doesn't contain the clothing type in its name", card.getTitleText()));
+            wait.until(new Function<WebDriver, Boolean>() {
+                public Boolean apply(WebDriver webDriver) {
+                    ProductCard card = cards.get().get(i);
+                    String titleText = card.getTitleText().toLowerCase();
+                    Assert.assertTrue(titleText.contains(shoeLine.toLowerCase()), String.format("Product with name '%s' doesn't contain the shoe line in its name", card.getTitleText()));
+                    Assert.assertTrue(card.mainProductImageExists(), String.format("Product with name '%s' doesn't contain an image", card.getTitleText()));
+                    if (card.priceItemExists()) {
+                        Assert.assertTrue(card.getPriceItemText().contains("$"), String.format("Product with name '%s' doesn't contain a dollar sign in the price", card.getTitleText()));
+                    } else {
+                        Assert.fail("Price item not found");
+                    }
+                    ProductPage productPage = card.clickCard();
+                    Assert.assertTrue(productPage.getProductTitle().toLowerCase().equals(titleText));
+                    return true;
+                }
+            });
+            driver.navigate().back();
         });
 
         sa.assertAll();
@@ -94,15 +127,24 @@ public class HomePageTest extends AbstractTest {
         Assert.assertTrue(productPreview.newArrivalsTabExists(), "New Arrivals tab does not exist");
         Assert.assertTrue(productPreview.whatsTrendingTabExists(), "Whats trending tab does not exist");
 
-        productPreview.clickWhatsTrendingTab();
+        productPreview.clickTab(ProductPreviewTab.WHATSTRENDING);
 
         Assert.assertTrue(productPreview.hasCorrectActiveTab(), "Active tab wasn't changed on click");
         Assert.assertTrue(productPreview.carouselItemsExists(), "No carousel items present in whats trending tab");
 
-        productPreview.clickNewArrivalsTab();
+        productPreview.clickTab(ProductPreviewTab.NEWARRIVALS);
 
         Assert.assertTrue(productPreview.hasCorrectActiveTab(), "Active tab wasn't changed on click");
         Assert.assertTrue(productPreview.carouselItemsExists(), "No carousel items present in new arrivals tab");
+
+        //Assert that trending tab has black letter and transparent background without hover
+        Assert.assertEquals(productPreview.getTrendingTabTextColor(), "rgba(0, 0, 0, 1)");
+        Assert.assertEquals(productPreview.getTrendingTabBackgroundColor(), "rgba(0, 0, 0, 0)");
+
+        productPreview.hoverTrendingTab();
+
+        Assert.assertEquals(productPreview.getTrendingTabTextColor(), "rgba(255, 255, 255, 1)");
+        Assert.assertEquals(productPreview.getTrendingTabBackgroundColor(), "rgba(0, 0, 0, 1)");
     }
 
     @Test
@@ -159,5 +201,89 @@ public class HomePageTest extends AbstractTest {
         adiClubLogIn.enterInput("23");
         adiClubLogIn.clickContinueButton();
         Assert.assertTrue(adiClubLogIn.errorMessageExists(), "Error message did not appear when using invalid email");
+    }
+
+//    @Test
+//    public void iframeTest(){
+//        WebDriver driver = getDriver();
+//
+//        HomePage homePage = new HomePage(driver);
+//        homePage.open();
+//
+//        List<Class<? extends Exception>> waitExceptions = Arrays.asList(ElementNotInteractableException.class, NoSuchElementException.class, IndexOutOfBoundsException.class);
+//
+//        Wait<WebDriver> wait = new FluentWait<>(driver)
+//                .withTimeout(Duration.ofSeconds(30))
+//                .pollingEvery(Duration.ofSeconds(5))
+//                .ignoreAll(waitExceptions);
+//
+//        ProductPage productPage = wait.until(new Function<WebDriver, ProductPage>() {
+//            public ProductPage apply(WebDriver webDriver) {
+//                return homePage.getProductPreview().getCarouselItems().get(1).clickCarouselItem();
+//            }
+//        });
+//
+//        Assert.assertTrue(productPage.paypalMessageFrameExists(), "Paypal message frame does not exist on product page");
+//        productPage.switchToPaypalMessageFrame();
+//        productPage.clickPaypalButton();
+//
+//        driver.switchTo().defaultContent();
+//
+//        PaypalCreditFrame paypalCreditFrame = productPage.getPaypalCreditFrame();
+//        wait.until(new Function<WebDriver, Boolean>() {
+//            public Boolean  apply(WebDriver webDriver) {
+//                paypalCreditFrame.switchToPaypalCreditFrame();
+//                return true;
+//            }
+//        });
+//    }
+
+    @Test
+    public void iframeTest(){
+        WebDriver driver = getDriver();
+
+        HomePage homePage = new HomePage(driver);
+        homePage.open();
+
+        Wait<WebDriver> wait = new FluentWait<>(driver)
+                .withTimeout(Duration.ofSeconds(30))
+                .pollingEvery(Duration.ofSeconds(5))
+                .ignoring(ElementClickInterceptedException.class);
+
+        Assert.assertFalse(homePage.feedbackIframeExists(), "Iframe exists before feedback button is pressed");
+
+        FeedbackIframe feedbackIframe = homePage.clickFeedback();
+        String homePageHandle = driver.getWindowHandle();
+
+        HelpPage helpPage = wait.until(new Function<WebDriver, HelpPage>() {
+            @Override
+            public HelpPage apply(WebDriver webDriver) {
+                return feedbackIframe.clickGetHelp();
+            }
+        });
+        driver.switchTo().defaultContent();
+        Assert.assertTrue(helpPage.headerExists(), "Header does not exist on help page");
+
+        driver.getWindowHandles().stream().forEach(handle -> {
+            if (!handle.equals(homePageHandle)){
+                driver.switchTo().window(handle);
+                driver.close();
+            }
+        });
+
+        driver.switchTo().window(homePageHandle);
+        homePage.switchToFeedbackIframe();
+
+        Integer numberOfFeedbackOptions = wait.until(new Function<WebDriver, Integer>() {
+            public Integer apply(WebDriver webDriver) {
+                Integer number = 0;
+                while(number < 11){
+                    number = feedbackIframe.numberOfFeedbackOptions();
+                }
+                return number;
+            }
+        });
+
+        Assert.assertEquals(numberOfFeedbackOptions, 11, "Number of options is not correct");
     }
 }

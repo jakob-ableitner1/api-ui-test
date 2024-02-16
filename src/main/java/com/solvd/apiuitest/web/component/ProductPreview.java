@@ -1,9 +1,11 @@
 package com.solvd.apiuitest.web.component;
 
+import com.solvd.apiuitest.enums.ProductPreviewTab;
 import com.zebrunner.carina.webdriver.decorator.ExtendedWebElement;
 import com.zebrunner.carina.webdriver.gui.AbstractUIObject;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 
 import java.util.List;
@@ -37,14 +39,17 @@ public class ProductPreview extends AbstractUIObject {
         return carouselItems.stream().findFirst().isPresent();
     }
 
-    public void clickNewArrivalsTab() {
-        newArrivalsTab.click();
-        currentTab = newArrivalsTab;
-    }
+    public void clickTab(ProductPreviewTab tab) {
 
-    public void clickWhatsTrendingTab() {
-        whatsTrendingTab.click();
-        currentTab = whatsTrendingTab;
+        if (tab.equals(ProductPreviewTab.NEWARRIVALS)){
+            newArrivalsTab.click();
+            currentTab = newArrivalsTab;
+        }
+
+        if (tab.equals(ProductPreviewTab.WHATSTRENDING)){
+            whatsTrendingTab.click();
+            currentTab = whatsTrendingTab;
+        }
     }
 
     public boolean hasCorrectActiveTab(){
@@ -57,5 +62,18 @@ public class ProductPreview extends AbstractUIObject {
 
     public List<CarouselItem> getCarouselItems() {
         return carouselItems;
+    }
+
+    public String getTrendingTabTextColor(){
+        return whatsTrendingTab.getElement().getCssValue("color");
+    }
+
+    public String getTrendingTabBackgroundColor(){
+        return whatsTrendingTab.getElement().getCssValue("background-color");
+    }
+
+    public void hoverTrendingTab(){
+        Actions action = new Actions(driver);
+        action.moveToElement(whatsTrendingTab.getElement()).build().perform();
     }
 }

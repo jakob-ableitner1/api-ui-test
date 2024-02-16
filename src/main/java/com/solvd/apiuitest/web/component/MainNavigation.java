@@ -22,7 +22,7 @@ public class MainNavigation extends AbstractUIObject {
     }
 
     public SearchPage clickSaleButton(){
-        saleButton.click();
+        saleButton.click(1);
         return new SearchPage(getDriver());
     }
 }

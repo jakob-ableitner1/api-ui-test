@@ -29,6 +29,7 @@ public class MissionStatement extends AbstractUIObject {
 
     public boolean secondHeaderExists(){
         return secondHeader.isElementPresent(1);
+
     }
 
     public boolean paragraphBodysExist(){

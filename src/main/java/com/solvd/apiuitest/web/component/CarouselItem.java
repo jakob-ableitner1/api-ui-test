@@ -1,10 +1,13 @@
 package com.solvd.apiuitest.web.component;
 
+import com.solvd.apiuitest.web.ProductPage;
 import com.zebrunner.carina.webdriver.decorator.ExtendedWebElement;
 import com.zebrunner.carina.webdriver.gui.AbstractUIObject;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.FindBy;
+
+import java.time.Duration;
 
 public class CarouselItem extends AbstractUIObject {
 
@@ -24,5 +27,10 @@ public class CarouselItem extends AbstractUIObject {
 
     public boolean priceItemExists(){
         return priceItem.isElementPresent(1);
+    }
+
+    public ProductPage clickCarouselItem(){
+        image.click(Duration.ofSeconds(20));
+        return new ProductPage(getDriver());
     }
 }
